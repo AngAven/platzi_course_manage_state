@@ -1,9 +1,9 @@
-import React from 'react'
+import React, {useState, useReducer} from 'react'
 
 const SECURITY_CODE = 'paradigma'
 
 function UseState({name}){
-  const [state, setState] = React.useState({
+  const [state, setState] = useState({
     value: '',
     error: false,
     loading: false,
