@@ -3,60 +3,7 @@ import React, {useState, useReducer} from 'react'
 const SECURITY_CODE = 'paradigma'
 
 function UseState({name}){
-  const [state, setState] = useState({
-    value: '',
-    error: false,
-    loading: false,
-    deleted: false,
-    confirmed: false
-  })
-
-  const onConfirm = () => {
-    setState({
-      ...state,
-      error: false,
-      loading: false,
-      confirmed: true,
-    })
-  }
-
-  const onError = () => {
-    setState({
-      ...state,
-      error: true,
-      loading: false,
-    })
-  }
-
-  const onWrite = (value) => {
-    setState({
-      ...state,
-      value,
-    })
-  }
-
-  const onCheck = () => {
-    setState({
-      ...state,
-      loading: true,
-    })
-  }
-
-  const onDeleted = () => {
-    setState({
-      ...state,
-      deleted: true,
-    })
-  }
-
-  const onReset = () => {
-    setState({
-      ...state,
-      confirmed: false,
-      deleted: false,
-      value: '',
-    })
-  }
+  const [state, dispatch] = useReducer(reducer, initialState)
 
   React.useEffect(() => {
     console.log('empieza efectp')
@@ -65,9 +12,13 @@ function UseState({name}){
         console.log('Iniciando validación')
 
         if (state.value === SECURITY_CODE) {
-          onConfirm()
+          dispatch({
+            type: 'CONFIRM',
+          })
         } else {
-          onError()
+          dispatch({
+            type: 'ERROR',
+          })
         }
 
         console.log('Terminando validacion')
@@ -97,12 +48,17 @@ function UseState({name}){
           placeholder="Código de seguridad"
           onChange={
             (e) => {
-              onWrite(e.target.value)
+              dispatch({
+                type: 'WRITE',
+                payload: e.target.value,
+              })
             }}
         />
         <button
           onClick={() => {
-            onCheck()
+            dispatch({
+              type: 'CHECK',
+            })
           }}
         >Comprobar
         </button>
@@ -114,14 +70,18 @@ function UseState({name}){
         <p>Pedimos confirmación ¿estas seguro?</p>
         <button
           onClick={() => {
-            onDeleted()
+            dispatch({
+              type: 'DELETE',
+            })
           }}
         >Si
         </button>
 
         <button
           onClick={() => {
-            onReset()
+            dispatch({
+              type: 'RESET',
+            })
           }}
         >No
         </button>
@@ -133,12 +93,62 @@ function UseState({name}){
         <p>Eliminado con éxito</p>
         <button
           onClick={() => {
-            onReset()
+            dispatch({
+              type: 'RESET',
+            })
           }}
         >Reset
         </button>
       </React.Fragment>
     )
+  }
+}
+
+const initialState = {
+  value: '',
+  error: false,
+  loading: false,
+  deleted: false,
+  confirmed: false
+}
+
+const reducerObject = (state, payload) => ({
+  'ERROR': {
+    ...state,
+    error: true,
+    loading: false,
+  },
+  'CHECK': {
+    ...state,
+    loading: true,
+  },
+  'CONFIRM': {
+    ...state,
+    error: false,
+    loading: false,
+    confirmed: true,
+  },
+  'RESET': {
+    ...state,
+    confirmed: false,
+    deleted: false,
+    value: '',
+  },
+  'DELETE': {
+    ...state,
+    deleted: true,
+  },
+  'WRITE': {
+    ...state,
+    value: payload,
+  },
+})
+
+const reducer = (state, action) => {
+  if (reducerObject(state)[action.type]) {
+    return reducerObject(state, action.payload)[action.type]
+  } else {
+    return state
   }
 }
 
