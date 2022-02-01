@@ -1,11 +1,11 @@
 import React from 'react'
 
-import {UseState} from './UseState';
+import {UseReducer} from './UseReducer';
 
 function App() {
   return (
     <div className="App">
-      <UseState name="Use Reducer"/>
+      <UseReducer name="Use Reducer"/>
     </div>
   );
 }

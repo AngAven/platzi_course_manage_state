@@ -2,7 +2,7 @@ import React, {useState, useReducer} from 'react'
 
 const SECURITY_CODE = 'paradigma'
 
-function UseState({name}){
+function UseReducer({name}){
   const [state, dispatch] = useReducer(reducer, initialState)
 
   React.useEffect(() => {
@@ -13,11 +13,11 @@ function UseState({name}){
 
         if (state.value === SECURITY_CODE) {
           dispatch({
-            type: 'CONFIRM',
+            type: actionsTypes.confirm,
           })
         } else {
           dispatch({
-            type: 'ERROR',
+            type: actionsTypes.error,
           })
         }
 
@@ -49,7 +49,7 @@ function UseState({name}){
           onChange={
             (e) => {
               dispatch({
-                type: 'WRITE',
+                type: actionsTypes.write,
                 payload: e.target.value,
               })
             }}
@@ -57,7 +57,7 @@ function UseState({name}){
         <button
           onClick={() => {
             dispatch({
-              type: 'CHECK',
+              type: actionsTypes.check,
             })
           }}
         >Comprobar
@@ -71,7 +71,7 @@ function UseState({name}){
         <button
           onClick={() => {
             dispatch({
-              type: 'DELETE',
+              type: actionsTypes.delete,
             })
           }}
         >Si
@@ -80,7 +80,7 @@ function UseState({name}){
         <button
           onClick={() => {
             dispatch({
-              type: 'RESET',
+              type: actionsTypes.reset,
             })
           }}
         >No
@@ -94,7 +94,7 @@ function UseState({name}){
         <button
           onClick={() => {
             dispatch({
-              type: 'RESET',
+              type: actionsTypes.reset,
             })
           }}
         >Reset
@@ -113,36 +113,45 @@ const initialState = {
 }
 
 const reducerObject = (state, payload) => ({
-  'ERROR': {
+  [actionsTypes.error]: {
     ...state,
     error: true,
     loading: false,
   },
-  'CHECK': {
+  [actionsTypes.check]: {
     ...state,
     loading: true,
   },
-  'CONFIRM': {
+  [actionsTypes.confirm]: {
     ...state,
     error: false,
     loading: false,
     confirmed: true,
   },
-  'RESET': {
+  [actionsTypes.reset]: {
     ...state,
     confirmed: false,
     deleted: false,
     value: '',
   },
-  'DELETE': {
+  [actionsTypes.delete]: {
     ...state,
     deleted: true,
   },
-  'WRITE': {
+  [actionsTypes.write]: {
     ...state,
     value: payload,
   },
 })
+
+const actionsTypes = {
+  confirm: 'CONFIRM',
+  check: 'CHECK',
+  reset: 'RESET',
+  delete: 'DELETE',
+  write: 'WRITE',
+  error: 'ERROR',
+}
 
 const reducer = (state, action) => {
   if (reducerObject(state)[action.type]) {
@@ -152,4 +161,4 @@ const reducer = (state, action) => {
   }
 }
 
-export {UseState}
+export {UseReducer}
